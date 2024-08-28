@@ -92,4 +92,20 @@ describe('Constructor method', () => {
 
     expect(() => new UserEntity(props)).toThrow(EntityValidationError);
   });
+
+  it('should throw an error when creating a user with invalid createdAt', () => {
+    let props: UserProps = {
+      ...userDataBuilder({}),
+      createdAt: '2024' as any,
+    };
+
+    expect(() => new UserEntity(props)).toThrow(EntityValidationError);
+
+    props = {
+      ...userDataBuilder({}),
+      createdAt: 256 as any,
+    };
+
+    expect(() => new UserEntity(props)).toThrow(EntityValidationError);
+  });
 });
