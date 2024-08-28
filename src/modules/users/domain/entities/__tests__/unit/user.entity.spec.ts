@@ -6,11 +6,13 @@ describe('UserEntity unit tests', () => {
   let props: UserProps;
 
   beforeEach(() => {
+    UserEntity.validate = jest.fn(); //mocando a implementação do metodo estatico
     props = userDataBuilder({});
     sut = new UserEntity({ ...props });
   });
 
   it('should create a new UserEntity', () => {
+    expect(UserEntity.validate).toHaveBeenCalled();
     expect(sut.props.name).toEqual(props.name);
     expect(sut.props.email).toEqual(props.email);
     expect(sut.props.password).toEqual(props.password);
@@ -54,11 +56,13 @@ describe('UserEntity unit tests', () => {
 
   it('should update a user', () => {
     sut.update('teste');
+    expect(UserEntity.validate).toHaveBeenCalled();
     expect(sut.props.name).toEqual('teste');
   });
 
   it('should update a password', () => {
     sut.updatePassword('teste');
+    expect(UserEntity.validate).toHaveBeenCalled();
     expect(sut.props.password).toEqual('teste');
   });
 });
