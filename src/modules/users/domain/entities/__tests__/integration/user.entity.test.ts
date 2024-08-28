@@ -32,4 +32,34 @@ describe('Constructor method', () => {
 
     expect(() => new UserEntity(props)).toThrow(EntityValidationError);
   });
+
+  it('should throw an error when creating a user with invalid email', () => {
+    let props: UserProps = {
+      ...userDataBuilder({}),
+      email: null,
+    };
+
+    expect(() => new UserEntity(props)).toThrow(EntityValidationError);
+
+    props = {
+      ...userDataBuilder({}),
+      email: '',
+    };
+
+    expect(() => new UserEntity(props)).toThrow(EntityValidationError);
+
+    props = {
+      ...userDataBuilder({}),
+      email: 'a'.repeat(256),
+    };
+
+    expect(() => new UserEntity(props)).toThrow(EntityValidationError);
+
+    props = {
+      ...userDataBuilder({}),
+      email: 256 as any,
+    };
+
+    expect(() => new UserEntity(props)).toThrow(EntityValidationError);
+  });
 });
