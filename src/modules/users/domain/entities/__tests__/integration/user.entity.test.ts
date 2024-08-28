@@ -108,4 +108,10 @@ describe('Constructor method', () => {
 
     expect(() => new UserEntity(props)).toThrow(EntityValidationError);
   });
+
+  it('should valid user', () => {
+    expect.assertions(0); //espera 0 erros de teste durante a execução
+    const props: UserProps = userDataBuilder({});
+    new UserEntity(props);
+  });
 });
