@@ -1,7 +1,8 @@
-import { InMemoryRepository } from '@/shared/domain/repositories/in-memory.repository';
 import { UserEntity } from '../entities/user.entity';
+import { SearchableRepositoryInterface } from '@/shared/domain/repositories/searchable-repository-contract';
 
-export interface UserRepository extends InMemoryRepository<UserEntity> {
+export interface UserRepository
+  extends SearchableRepositoryInterface<UserEntity, any, any> {
   findByEmail(email: string): Promise<UserEntity>;
   emailExists(email: string): Promise<void>;
 }
