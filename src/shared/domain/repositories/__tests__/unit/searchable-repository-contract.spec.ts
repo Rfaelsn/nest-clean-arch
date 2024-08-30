@@ -1,4 +1,7 @@
-import { SearchParams } from '../../searchable-repository-contract';
+import {
+  SearchParams,
+  SearchResult,
+} from '../../searchable-repository-contract';
 
 describe('Searchable Repository unit tests', () => {
   describe('SearchParams tests', () => {
@@ -130,6 +133,79 @@ describe('Searchable Repository unit tests', () => {
       params.forEach((i) => {
         expect(new SearchParams({ filter: i.filter }).filter).toBe(i.expect);
       });
+    });
+  });
+
+  describe('SearchResult tests', () => {
+    it('constructor tests', () => {
+      //testando to json
+      let sut = new SearchResult({
+        items: ['teste1', 'teste2', 'teste3', 'teste4'] as any,
+        total: 4,
+        currentPage: 1,
+        perPage: 2,
+        sort: null,
+        sortDir: null,
+        filter: null,
+      });
+
+      //a ideia do toJSON é trazer apenas os atributos tirando os metodos
+      expect(sut.toJSON()).toStrictEqual({
+        items: ['teste1', 'teste2', 'teste3', 'teste4'] as any,
+        total: 4,
+        currentPage: 1,
+        perPage: 2,
+        lastPage: 2,
+        sort: null,
+        sortDir: null,
+        filter: null,
+      });
+
+      //testando propriedades sort,sortDir,filter se passadas
+      sut = new SearchResult({
+        items: ['teste1', 'teste2', 'teste3', 'teste4'] as any,
+        total: 4,
+        currentPage: 1,
+        perPage: 2,
+        sort: 'name',
+        sortDir: 'asc',
+        filter: 'test',
+      });
+
+      //a ideia do toJSON é trazer apenas os atributos tirando os metodos
+      expect(sut.toJSON()).toStrictEqual({
+        items: ['teste1', 'teste2', 'teste3', 'teste4'] as any,
+        total: 4,
+        currentPage: 1,
+        perPage: 2,
+        lastPage: 2,
+        sort: 'name',
+        sortDir: 'asc',
+        filter: 'test',
+      });
+
+      //testando se o lastPage calcula correto em caso de valores não multiplos de perPage
+      sut = new SearchResult({
+        items: ['teste1', 'teste2', 'teste3', 'teste4'] as any,
+        total: 4,
+        currentPage: 1,
+        perPage: 10,
+        sort: 'name',
+        sortDir: 'asc',
+        filter: 'test',
+      });
+      expect(sut.lastPage).toBe(1);
+
+      sut = new SearchResult({
+        items: ['teste1', 'teste2', 'teste3', 'teste4'] as any,
+        total: 54,
+        currentPage: 1,
+        perPage: 10,
+        sort: 'name',
+        sortDir: 'asc',
+        filter: 'test',
+      });
+      expect(sut.lastPage).toBe(6);
     });
   });
 });
