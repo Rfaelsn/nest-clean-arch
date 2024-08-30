@@ -4,21 +4,21 @@ import { RepositoryInterface } from './repository-contract';
 export type SortDiretion = 'asc' | 'desc';
 
 export type SearchProps<Filter = string> = {
-  page: number;
-  perPage: number;
-  sort: string | null;
-  sortDir: SortDiretion | null;
+  page?: number;
+  perPage?: number;
+  sort?: string | null;
+  sortDir?: SortDiretion | null;
   filter?: Filter | null;
 };
 
-export class SearchParams {
+export class SearchParams<Filter = string> {
   protected _page: number;
   protected _perPage = 15;
   protected _sort: string | null;
   protected _sortDir: SortDiretion | null;
-  protected _filter?: string | null;
+  protected _filter: Filter | null;
 
-  constructor(props: SearchProps) {
+  constructor(props: SearchProps<Filter> = {}) {
     this.page = props.page;
     this.perPage = props.perPage;
     this.sort = props.sort;
@@ -26,25 +26,24 @@ export class SearchParams {
     this.filter = props.filter;
   }
 
-  get page(): number {
+  get page() {
     return this._page;
   }
 
-  set page(value: number) {
+  private set page(value: number) {
     let _page = +value;
     if (Number.isNaN(_page) || _page <= 0 || parseInt(_page as any) !== _page) {
       _page = 1;
     }
-
     this._page = _page;
   }
 
-  get perPage(): number {
+  get perPage() {
     return this._perPage;
   }
 
-  set perPage(value: number) {
-    let _perPage = +value;
+  private set perPage(value: number) {
+    let _perPage = value === (true as any) ? this._perPage : +value;
     if (
       Number.isNaN(_perPage) ||
       _perPage <= 0 ||
@@ -52,40 +51,40 @@ export class SearchParams {
     ) {
       _perPage = this._perPage;
     }
-
     this._perPage = _perPage;
   }
 
-  get sort(): string | null {
+  get sort() {
     return this._sort;
   }
 
-  set sort(value: string | null) {
+  private set sort(value: string | null) {
     this._sort =
       value === null || value === undefined || value === '' ? null : `${value}`;
   }
 
-  get sortDir(): SortDiretion | null {
+  get sortDir() {
     return this._sortDir;
   }
 
-  set sortDir(value: SortDiretion | null) {
+  private set sortDir(value: string | null) {
     if (!this.sort) {
       this._sortDir = null;
       return;
     }
-
     const dir = `${value}`.toLowerCase();
     this._sortDir = dir !== 'asc' && dir !== 'desc' ? 'desc' : dir;
   }
 
-  get filter() {
+  get filter(): Filter | null {
     return this._filter;
   }
 
-  set filter(value: string | null) {
-    this.filter =
-      value === null || value === undefined || value === '' ? null : `${value}`;
+  private set filter(value: Filter | null) {
+    this._filter =
+      value === null || value === undefined || value === ''
+        ? null
+        : (`${value}` as any);
   }
 }
 
