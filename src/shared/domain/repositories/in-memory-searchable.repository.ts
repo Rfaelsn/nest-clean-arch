@@ -12,7 +12,7 @@ export abstract class InMemorySearchableRepository<E extends Entity>
 {
   sortableFields: string[] = [];
 
-  async seach(props: SearchParams): Promise<SearchResult<E>> {
+  async search(props: SearchParams): Promise<SearchResult<E>> {
     const itemsFiltered = await this.applyFilter(this.items, props.filter);
     const itemsSorted = await this.applySort(
       itemsFiltered,
