@@ -32,7 +32,37 @@ describe('StubInMemorySearchableRepository unit tests', () => {
   });
 
   describe('applyFilter method', () => {
-    it('', async () => {});
+    //testando caso filtro passado seja nulo (nao foi passado)
+    it('should no filter items when filter param is null', async () => {
+      const items = [new StubEntity({ name: 'name value', price: 50 })];
+      const spyFilterMethod = jest.spyOn(items, 'filter');
+      const itemsFiltered = await sut['applyFilter'](items, null);
+      expect(itemsFiltered).toStrictEqual(items);
+      expect(spyFilterMethod).not.toHaveBeenCalled();
+    });
+
+    it('should filter using filter param', async () => {
+      const items = [
+        new StubEntity({ name: 'test', price: 50 }),
+        new StubEntity({ name: 'TEST', price: 50 }),
+        new StubEntity({ name: 'fake', price: 50 }),
+      ];
+      const spyFilterMethod = jest.spyOn(items, 'filter');
+      let itemsFiltered = await sut['applyFilter'](items, 'TEST');
+      expect(itemsFiltered).toStrictEqual([items[0], items[1]]);
+      expect(spyFilterMethod).toHaveBeenCalledTimes(1);
+
+      //deve retornar os items com nome test mesmo passando minusculo ou maiusculo
+      itemsFiltered = await sut['applyFilter'](items, 'test');
+      expect(itemsFiltered).toStrictEqual([items[0], items[1]]);
+      //verifica quantas vezes foi chamada a função com spyOn
+      expect(spyFilterMethod).toHaveBeenCalledTimes(2);
+
+      //deve retornar 0 items pois n existem items com esse name
+      itemsFiltered = await sut['applyFilter'](items, 'no-filter');
+      expect(itemsFiltered).toHaveLength(0);
+      expect(spyFilterMethod).toHaveBeenCalledTimes(3);
+    });
   });
 
   describe('applySort method', () => {});
