@@ -53,6 +53,7 @@ export class SearchParams<Filter = string> {
   }
 
   private set perPage(value: number) {
+    //esse tratamento nao deixa o true passar como 1
     let _perPage = value === (true as any) ? this._perPage : +value;
     if (
       Number.isNaN(_perPage) ||
@@ -98,7 +99,7 @@ export class SearchParams<Filter = string> {
   }
 }
 
-export class SearchResult<E extends Entity, Filter> {
+export class SearchResult<E extends Entity, Filter = string> {
   readonly items: E[];
   readonly total: number;
   readonly currentPage: number;

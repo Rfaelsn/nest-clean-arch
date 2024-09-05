@@ -75,6 +75,6 @@ describe('InMemoryRepository unit tests', () => {
     const entity = new StubEntity({ name: 'test name', price: 50 });
     await sut.insert(entity);
     await sut.delete(entity._id);
-    expect(sut.items).toHaveLength(0);
+    expect(sut.items).toHaveLength(0); //deve ter o length igual a 0
   });
 });
