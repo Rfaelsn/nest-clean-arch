@@ -1,13 +1,13 @@
 import { Entity } from '../entities/entity';
 import { RepositoryInterface } from './repository-contract';
 
-export type SortDiretion = 'asc' | 'desc';
+export type SortDirection = 'asc' | 'desc';
 
 export type SearchProps<Filter = string> = {
   page?: number;
   perPage?: number;
   sort?: string | null;
-  sortDir?: SortDiretion | null;
+  sortDir?: SortDirection | null;
   filter?: Filter | null;
 };
 
@@ -25,7 +25,7 @@ export class SearchParams<Filter = string> {
   protected _page: number;
   protected _perPage = 15;
   protected _sort: string | null;
-  protected _sortDir: SortDiretion | null;
+  protected _sortDir: SortDirection | null;
   protected _filter: Filter | null;
 
   constructor(props: SearchProps<Filter> = {}) {
@@ -140,6 +140,7 @@ export interface SearchableRepositoryInterface<
   SearchInput = SearchParams<Filter>,
   SearchOutput = SearchResult<E, Filter>,
 > extends RepositoryInterface<E> {
+  //o extends é para um searchable tb ter os metodos de pesquisa padrão de um repository basico
   sortableFields: string[];
   search(props: SearchInput): Promise<SearchOutput>;
 }

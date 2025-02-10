@@ -22,7 +22,7 @@ class StubClassValidatorFields extends ClassValidatorFields<StubRules> {
   }
 }
 
-describe('ClassValidatorFields unit tests', () => {
+describe('ClassValidatorFields integration tests', () => {
   it('should validate with errors', () => {
     const validator = new StubClassValidatorFields();
     expect(validator.validate(null)).toBeFalsy();
