@@ -3,17 +3,29 @@ import { UserRepository } from '@/modules/users/domain/repositories/user.reposit
 import { ConflictError } from '@/shared/domain/errors/conflict-error';
 import { NotFoundError } from '@/shared/domain/errors/not-found-error';
 import { InMemorySearchableRepository } from '@/shared/domain/repositories/in-memory-searchable.repository';
+import { SortDirection } from '@/shared/domain/repositories/searchable-repository-contract';
 
 export class UserInMemoryRepository
   extends InMemorySearchableRepository<UserEntity>
-  implements UserRepository
+  implements UserRepository.Repository
 {
-  protected applyFilter(
+  sortableFields: string[] = ['name', 'createdAt'];
+
+  protected async applyFilter(
     items: UserEntity[],
-    filter: string | null,
+    filter: UserRepository.Filter,
   ): Promise<UserEntity[]> {
-    throw new Error('Method not implemented.');
+    if (!filter) {
+      return items;
+    }
+
+    return items.filter((item) => {
+      return item.props.name
+        .toLocaleLowerCase()
+        .includes(filter.toLocaleLowerCase());
+    });
   }
+
   async findByEmail(email: string): Promise<UserEntity> {
     const entity = this.items.find((item) => item.email === email);
     if (!entity) {
@@ -21,10 +33,22 @@ export class UserInMemoryRepository
     }
     return entity;
   }
+
   async emailExists(email: string): Promise<void> {
     const entity = this.items.find((item) => item.email === email);
     if (entity) {
       throw new ConflictError(`Email address already used`);
     }
+  }
+
+  //sobrescrevendo metodo de sorteamento para o sort padrão ser por createdAt caso esse parametro nao seja passado
+  protected async applySort(
+    items: UserEntity[],
+    sort: string | null,
+    sortDir: SortDirection | null,
+  ): Promise<UserEntity[]> {
+    return !sort
+      ? super.applySort(items, 'createdAt', 'desc')
+      : super.applySort(items, sort, sortDir);
   }
 }
