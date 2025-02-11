@@ -1,4 +1,5 @@
 import { UserRepository } from '../../domain/repositories/user.repository';
+import { UserOutputDto } from '../dtos/user-output.dto';
 
 // eslint-disable-next-line
 export namespace GetUserUseCase {
@@ -6,13 +7,7 @@ export namespace GetUserUseCase {
     id:string
   };
 
-  export type Output = {
-    id: string;
-    name: string;
-    email: string;
-    password: string;
-    createdAt: Date;
-  };
+  export type Output = UserOutputDto;
 
   export class UseCase {
     constructor(
