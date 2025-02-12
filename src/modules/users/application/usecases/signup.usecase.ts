@@ -3,6 +3,7 @@ import { UserEntity } from '../../domain/entities/user.entity';
 import { UserRepository } from '../../domain/repositories/user.repository';
 import { BadRequestError } from '../errors/bad-request-error';
 import { UserOutputDto } from '../dtos/user-output.dto';
+import { UseCase as DefaultUseCase } from '@/shared/application/usecases/use-case';
 
 // eslint-disable-next-line
 export namespace SignupUseCase {
@@ -14,7 +15,7 @@ export namespace SignupUseCase {
 
   export type Output = UserOutputDto;
 
-  export class UseCase {
+  export class UseCase implements DefaultUseCase<Input,Output> {
     constructor(
       private readonly userRepository: UserRepository.Repository,
       private readonly hashProvider:HashProvider
