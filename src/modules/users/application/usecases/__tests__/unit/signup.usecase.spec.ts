@@ -7,7 +7,7 @@ import { ConflictError } from "@/shared/domain/errors/conflict-error";
 import { BadRequestError } from "../../../errors/bad-request-error";
 
 
-describe('UserInMemoryRepository unit tests', () => {
+describe('SignupUseCase unit tests', () => {
   let sut: SignupUseCase.UseCase;
   let userRepository : UserInMemoryRepository;
   let hashProvider: HashProvider;
