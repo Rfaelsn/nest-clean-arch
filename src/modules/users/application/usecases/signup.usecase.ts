@@ -2,7 +2,7 @@ import { HashProvider } from '@/shared/application/providers/hash-provider';
 import { UserEntity } from '../../domain/entities/user.entity';
 import { UserRepository } from '../../domain/repositories/user.repository';
 import { BadRequestError } from '../../../../shared/application/errors/bad-request-error';
-import { UserOutputDto } from '../dtos/user-output.dto';
+import { UserOutputDto, UserOutputMapper } from '../dtos/user-output.dto';
 import { UseCase as DefaultUseCase } from '@/shared/application/usecases/use-case';
 
 // eslint-disable-next-line
@@ -32,7 +32,7 @@ export namespace SignupUseCase {
 
       const hashPassword = await this.hashProvider.generateHash(password);
 
-      const entity = new UserEntity(
+      const userEntity = new UserEntity(
         //source do object assign injeta as propriedades em conjunto com o primeiro parametro podendo sobrescrever
         Object.assign(
           input,
@@ -40,9 +40,9 @@ export namespace SignupUseCase {
         )
       );
 
-      await this.userRepository.insert(entity);
+      await this.userRepository.insert(userEntity);
 
-      return entity.toJSON();
+      return UserOutputMapper.toOutput(userEntity);
     }
   }
 }
