@@ -5,49 +5,54 @@ import { UserInMemoryRepository } from "@/modules/users/infrastructure/database/
 import { userDataBuilder } from "@/modules/users/domain/testing/helpers/user-data-builder";
 import { ConflictError } from "@/shared/domain/errors/conflict-error";
 import { BadRequestError } from "../../../../../../shared/application/errors/bad-request-error";
+import { SigninUseCase } from "../../signin.usecase";
+import { UserEntity } from "@/modules/users/domain/entities/user.entity";
+import { NotFoundError } from "@/shared/domain/errors/not-found-error";
+import { InvalidCredentialsError } from "@/shared/application/errors/invalid-credentials-error";
 
 
 describe('SigninUseCase unit tests', () => {
-  let sut: SignupUseCase.UseCase;
+  let sut: SigninUseCase.UseCase;
   let userRepository : UserInMemoryRepository;
   let hashProvider: HashProvider;
 
   beforeEach(() => {
     userRepository = new UserInMemoryRepository();
     hashProvider = new BcryptjsHashProvider();
-    sut = new SignupUseCase.UseCase(userRepository,hashProvider);
+    sut = new SigninUseCase.UseCase(userRepository,hashProvider);
   });
 
-  it('Should create a user', async () => {
-    const spyInsert = jest.spyOn(userRepository,'insert');
-    const props = userDataBuilder({});
-    const result = await sut.execute(props)
+  it('Should authenticate a user', async () => {
+    const spyFindByEmail = jest.spyOn(userRepository,'findByEmail');
+    const hashPassword = await hashProvider.generateHash('1234')
+    const userEntity = new UserEntity(userDataBuilder({email:'a@a.com',password:hashPassword}))
+    userRepository.items = [userEntity];
+    const result = await sut.execute({email:userEntity.email,password:'1234'})
 
-    expect(result.id).toBeDefined();
-    expect(result.createdAt).toBeInstanceOf(Date);
-    expect(spyInsert).toHaveBeenCalledTimes(1)
-  });
-
-  it('Should not be able to register with same email twice', async () => {
-    const props = userDataBuilder({email:'a@a.com'});
-    await sut.execute(props)
-
-    await expect(()=> sut.execute(props)).rejects.toBeInstanceOf(ConflictError)
-
-  });
-
-  it('Should throws error when name not provided', async () => {
-    const props = Object.assign(userDataBuilder({}),{name:null})
-    await expect(()=> sut.execute(props)).rejects.toBeInstanceOf(BadRequestError)
+    expect(spyFindByEmail).toHaveBeenCalledTimes(1)
+    expect(result).toStrictEqual(userEntity.toJSON());
   });
 
   it('Should throws error when email not provided', async () => {
-    const props = Object.assign(userDataBuilder({}),{email:null})
+    const props = {email:null,password:'1234'}
     await expect(()=> sut.execute(props)).rejects.toBeInstanceOf(BadRequestError)
   });
 
   it('Should throws error when password not provided', async () => {
-    const props = Object.assign(userDataBuilder({}),{password:null})
+    const props = {email:'a@a.com',password:null}
     await expect(()=> sut.execute(props)).rejects.toBeInstanceOf(BadRequestError)
+  });
+
+  it('Should not able to authenticate with wrong email', async () => {
+    const props = {email:'a@a.com',password:'1234'}
+    await expect(()=> sut.execute(props)).rejects.toBeInstanceOf(NotFoundError)
+  });
+
+  it('Should not able to authenticate with wrong password', async () => {
+    const hashPassword = await hashProvider.generateHash('1234')
+    const userEntity = new UserEntity(userDataBuilder({email:'a@a.com',password:'1234'}))
+    userRepository.items = [userEntity];
+    const props = {email:'a@a.com',password:'fake'}
+    await expect(()=> sut.execute(props)).rejects.toBeInstanceOf(InvalidCredentialsError)
   });
 });

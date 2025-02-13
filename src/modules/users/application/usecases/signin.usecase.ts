@@ -1,5 +1,4 @@
 import { HashProvider } from '@/shared/application/providers/hash-provider';
-import { UserEntity } from '../../domain/entities/user.entity';
 import { UserRepository } from '../../domain/repositories/user.repository';
 import { BadRequestError } from '../../../../shared/application/errors/bad-request-error';
 import { UserOutputDto, UserOutputMapper } from '../dtos/user-output.dto';
