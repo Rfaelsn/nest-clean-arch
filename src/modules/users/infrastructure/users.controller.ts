@@ -28,25 +28,25 @@ import { UpdatePasswordDto } from './dtos/update-password.dto';
 export class UsersController {
 
   @Inject(SignupUseCase.UseCase)
-  private readonly signupUseCase: SignupUseCase.UseCase;
+  private signupUseCase: SignupUseCase.UseCase;
 
   @Inject(SigninUseCase.UseCase)
-  private readonly signinUseCase: SigninUseCase.UseCase;
+  private signinUseCase: SigninUseCase.UseCase;
 
   @Inject(UpdateUserUseCase.UseCase)
-  private readonly updateUserUseCase: UpdateUserUseCase.UseCase;
+  private updateUserUseCase: UpdateUserUseCase.UseCase;
 
   @Inject(UpdatePasswordUseCase.UseCase)
-  private readonly updatePasswordUseCase: UpdatePasswordUseCase.UseCase;
+  private updatePasswordUseCase: UpdatePasswordUseCase.UseCase;
 
   @Inject(DeleteUserUseCase.UseCase)
-  private readonly deleteUserUseCase: DeleteUserUseCase.UseCase;
+  private deleteUserUseCase: DeleteUserUseCase.UseCase;
 
   @Inject(ListUsersUseCase.UseCase)
-  private readonly listUsersUseCase: ListUsersUseCase.UseCase;
+  private listUsersUseCase: ListUsersUseCase.UseCase;
 
   @Inject(GetUserUseCase.UseCase)
-  private readonly getUserUseCase: GetUserUseCase.UseCase;
+  private getUserUseCase: GetUserUseCase.UseCase;
 
   @Post()
   async create(@Body() signupDto: SignupDto) {
