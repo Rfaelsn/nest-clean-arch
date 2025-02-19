@@ -1,4 +1,3 @@
-import { BadRequestError } from '@/shared/application/errors/bad-request-error';
 import { UserRepository } from '../../domain/repositories/user.repository';
 import { UserOutputDto, UserOutputMapper } from '../dtos/user-output.dto';
 import { UseCase as DefaultUseCase } from '@/shared/application/usecases/use-case';
