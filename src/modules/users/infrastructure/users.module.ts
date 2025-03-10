@@ -11,75 +11,84 @@ import { ListUsersUseCase } from '../application/usecases/list-users.usecase';
 import { UpdateUserUseCase } from '../application/usecases/update-user.usecase';
 import { UpdatePasswordUseCase } from '../application/usecases/update-password-user.usecase';
 import { DeleteUserUseCase } from '../application/usecases/delete-user.usecase';
+import { PrismaService } from '@/shared/infrastructure/database/prisma/prisma.service';
+import { UserPrismaRepository } from './database/prisma/repositorys/user-prisma.repository';
 
 @Module({
   controllers: [UsersController],
   providers: [
     {
-      provide: 'UserRepository',
-      useClass: UserInMemoryRepository,
+      provide: 'PrismaService',
+      useClass: PrismaService,
     },
     {
-      provide:'HashProvider',
-      useClass: BcryptjsHashProvider
+      provide: 'UserRepository',
+      useFactory: (prismaService: PrismaService) => {
+        return new UserPrismaRepository(prismaService);
+      },
+      inject: ['PrismaService'],
+    },
+    {
+      provide: 'HashProvider',
+      useClass: BcryptjsHashProvider,
     },
     {
       provide: SignupUseCase.UseCase,
-      useFactory:(
+      useFactory: (
         userRepository: UserRepository.Repository,
-        hashProvider: HashProvider
+        hashProvider: HashProvider,
       ) => {
-        return new SignupUseCase.UseCase(userRepository,hashProvider)
+        return new SignupUseCase.UseCase(userRepository, hashProvider);
       },
-      inject:['UserRepository','HashProvider']
+      inject: ['UserRepository', 'HashProvider'],
     },
     {
       provide: SigninUseCase.UseCase,
-      useFactory:(
+      useFactory: (
         userRepository: UserRepository.Repository,
-        hashProvider: HashProvider
+        hashProvider: HashProvider,
       ) => {
-        return new SigninUseCase.UseCase(userRepository,hashProvider)
+        return new SigninUseCase.UseCase(userRepository, hashProvider);
       },
-      inject:['UserRepository','HashProvider']
+      inject: ['UserRepository', 'HashProvider'],
     },
     {
       provide: GetUserUseCase.UseCase,
-      useFactory:(userRepository: UserRepository.Repository) => {
-        return new GetUserUseCase.UseCase(userRepository)
+      useFactory: (userRepository: UserRepository.Repository) => {
+        return new GetUserUseCase.UseCase(userRepository);
       },
-      inject:['UserRepository']
+      inject: ['UserRepository'],
     },
     {
       provide: ListUsersUseCase.UseCase,
-      useFactory:(userRepository: UserRepository.Repository) => {
-        return new ListUsersUseCase.UseCase(userRepository)
+      useFactory: (userRepository: UserRepository.Repository) => {
+        return new ListUsersUseCase.UseCase(userRepository);
       },
-      inject:['UserRepository']
+      inject: ['UserRepository'],
     },
     {
       provide: UpdateUserUseCase.UseCase,
-      useFactory:(userRepository: UserRepository.Repository) => {
-        return new UpdateUserUseCase.UseCase(userRepository)
+      useFactory: (userRepository: UserRepository.Repository) => {
+        return new UpdateUserUseCase.UseCase(userRepository);
       },
-      inject:['UserRepository']
+      inject: ['UserRepository'],
     },
     {
       provide: UpdatePasswordUseCase.UseCase,
-      useFactory:(
+      useFactory: (
         userRepository: UserRepository.Repository,
-        hashProvider: HashProvider
+        hashProvider: HashProvider,
       ) => {
-        return new UpdatePasswordUseCase.UseCase(userRepository,hashProvider)
+        return new UpdatePasswordUseCase.UseCase(userRepository, hashProvider);
       },
-      inject:['UserRepository','HashProvider']
+      inject: ['UserRepository', 'HashProvider'],
     },
     {
       provide: DeleteUserUseCase.UseCase,
-      useFactory:(userRepository: UserRepository.Repository) => {
-        return new DeleteUserUseCase.UseCase(userRepository)
+      useFactory: (userRepository: UserRepository.Repository) => {
+        return new DeleteUserUseCase.UseCase(userRepository);
       },
-      inject:['UserRepository']
+      inject: ['UserRepository'],
     },
   ],
 })

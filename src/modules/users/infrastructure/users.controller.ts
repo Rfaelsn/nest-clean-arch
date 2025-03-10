@@ -26,7 +26,6 @@ import { UpdatePasswordDto } from './dtos/update-password.dto';
 
 @Controller('users')
 export class UsersController {
-
   @Inject(SignupUseCase.UseCase)
   private signupUseCase: SignupUseCase.UseCase;
 
@@ -66,22 +65,25 @@ export class UsersController {
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    return this.getUserUseCase.execute({id});
+    return this.getUserUseCase.execute({ id });
   }
 
   @Put(':id')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.updateUserUseCase.execute({id, ...updateUserDto});
+    return this.updateUserUseCase.execute({ id, ...updateUserDto });
   }
 
   @Patch(':id')
-  async updatePassword(@Param('id') id: string, @Body() updatePasswordDto: UpdatePasswordDto) {
-    return this.updatePasswordUseCase.execute({id, ...updatePasswordDto});
+  async updatePassword(
+    @Param('id') id: string,
+    @Body() updatePasswordDto: UpdatePasswordDto,
+  ) {
+    return this.updatePasswordUseCase.execute({ id, ...updatePasswordDto });
   }
 
   @HttpCode(204)
   @Delete(':id')
   async remove(@Param('id') id: string) {
-    return this.deleteUserUseCase.execute({id});
+    return this.deleteUserUseCase.execute({ id });
   }
 }
