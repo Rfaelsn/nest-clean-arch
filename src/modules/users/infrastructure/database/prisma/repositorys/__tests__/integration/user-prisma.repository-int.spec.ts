@@ -45,4 +45,18 @@ describe('UserPrismaRepository integration tests', () => {
     });
     expect(result).toStrictEqual(entity.toJSON());
   });
+
+  it('should return all users', async () => {
+    const entity = new UserEntity(userDataBuilder({}));
+    await prismaService.user.create({ data: entity.toJSON() });
+    const userEntities = await sut.findAll();
+    expect(userEntities).toHaveLength(1);
+
+    //outra forma de fazer
+    expect(JSON.stringify(userEntities)).toBe(JSON.stringify([entity]));
+
+    userEntities.map((item) =>
+      expect(item.toJSON()).toStrictEqual(entity.toJSON()),
+    );
+  });
 });
