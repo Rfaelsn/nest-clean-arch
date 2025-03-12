@@ -3,17 +3,31 @@ import { UserRepository } from '@/modules/users/domain/repositories/user.reposit
 import { NotFoundError } from '@/shared/application/errors/bad-request-error';
 import { PrismaService } from '@/shared/infrastructure/database/prisma/prisma.service';
 import { UserModelMapper } from '../models/user-model.mapper';
+import { ConflictError } from '@/shared/domain/errors/conflict-error';
 
 export class UserPrismaRepository implements UserRepository.Repository {
   constructor(private readonly prismaService: PrismaService) {}
 
   sortableFields: string[] = ['name', 'createdAt'];
 
-  findByEmail(email: string): Promise<UserEntity> {
-    throw new Error('Method not implemented.');
+  async findByEmail(email: string): Promise<UserEntity> {
+    try {
+      const user = await this.prismaService.user.findUnique({
+        where: { email },
+      });
+      return UserModelMapper.toEntity(user);
+    } catch {
+      throw new NotFoundError(`UserModel not found using email ${email}`);
+    }
   }
-  emailExists(email: string): Promise<void> {
-    throw new Error('Method not implemented.');
+  async emailExists(email: string): Promise<void> {
+    const user = await this.prismaService.user.findUnique({
+      where: { email },
+    });
+
+    if (user) {
+      throw new ConflictError(`Emails address already used`);
+    }
   }
   async search(
     props: UserRepository.SearchParams,
@@ -41,13 +55,12 @@ export class UserPrismaRepository implements UserRepository.Repository {
             mode: 'insensitive',
           },
         },
-        orderBy: {
-          [orderByField]: orderByDir,
-        },
-        skip:
-          props.page && props.page > 0 ? (props.page - 1) * props.perPage : 1,
-        take: props.perPage && props.perPage > 0 ? props.perPage : 15,
       }),
+      orderBy: {
+        [orderByField]: orderByDir,
+      },
+      skip: props.page && props.page > 0 ? (props.page - 1) * props.perPage : 1,
+      take: props.perPage && props.perPage > 0 ? props.perPage : 15,
     });
 
     return new UserRepository.SearchResult({
@@ -60,21 +73,33 @@ export class UserPrismaRepository implements UserRepository.Repository {
       filter: props.filter,
     });
   }
+
   async insert(entity: UserEntity): Promise<void> {
     await this.prismaService.user.create({ data: entity.toJSON() });
   }
+
   async findById(id: string): Promise<UserEntity> {
     return this._get(id);
   }
+
   async findAll(): Promise<UserEntity[]> {
     const models = await this.prismaService.user.findMany();
     return models.map((model) => UserModelMapper.toEntity(model));
   }
-  update(entity: UserEntity): Promise<void> {
-    throw new Error('Method not implemented.');
+
+  async update(entity: UserEntity): Promise<void> {
+    await this._get(entity.id);
+    await this.prismaService.user.update({
+      data: entity.toJSON(),
+      where: {
+        id: entity._id,
+      },
+    });
   }
-  delete(id: string): Promise<void> {
-    throw new Error('Method not implemented.');
+
+  async delete(id: string): Promise<void> {
+    await this._get(id);
+    await this.prismaService.user.delete({ where: { id } });
   }
 
   protected async _get(id: string): Promise<UserEntity> {

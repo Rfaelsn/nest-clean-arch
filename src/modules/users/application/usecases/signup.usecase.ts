@@ -15,10 +15,10 @@ export namespace SignupUseCase {
 
   export type Output = UserOutputDto;
 
-  export class UseCase implements DefaultUseCase<Input,Output> {
+  export class UseCase implements DefaultUseCase<Input, Output> {
     constructor(
       private readonly userRepository: UserRepository.Repository,
-      private readonly hashProvider:HashProvider
+      private readonly hashProvider: HashProvider,
     ) {}
 
     async execute(input: Input): Promise<Output> {
@@ -28,16 +28,13 @@ export namespace SignupUseCase {
         throw new BadRequestError('Input data not provided');
       }
 
-      await this.userRepository.emailExists(email)
+      await this.userRepository.emailExists(email);
 
       const hashPassword = await this.hashProvider.generateHash(password);
 
       const userEntity = new UserEntity(
         //source do object assign injeta as propriedades em conjunto com o primeiro parametro podendo sobrescrever
-        Object.assign(
-          input,
-          {password: hashPassword}
-        )
+        Object.assign(input, { password: hashPassword }),
       );
 
       await this.userRepository.insert(userEntity);

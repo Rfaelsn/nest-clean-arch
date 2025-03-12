@@ -14,10 +14,10 @@ export namespace SigninUseCase {
 
   export type Output = UserOutputDto;
 
-  export class UseCase implements DefaultUseCase<Input,Output> {
+  export class UseCase implements DefaultUseCase<Input, Output> {
     constructor(
       private readonly userRepository: UserRepository.Repository,
-      private readonly hashProvider:HashProvider
+      private readonly hashProvider: HashProvider,
     ) {}
 
     async execute(input: Input): Promise<Output> {
@@ -29,10 +29,13 @@ export namespace SigninUseCase {
 
       const userEntity = await this.userRepository.findByEmail(email);
 
-      const hashPasswordMatches = await this.hashProvider.compareHash(password,userEntity.password);
+      const hashPasswordMatches = await this.hashProvider.compareHash(
+        password,
+        userEntity.password,
+      );
 
-      if(!hashPasswordMatches){
-        throw new InvalidCredentialsError('Invalid credentials')
+      if (!hashPasswordMatches) {
+        throw new InvalidCredentialsError('Invalid credentials');
       }
 
       return UserOutputMapper.toOutput(userEntity);

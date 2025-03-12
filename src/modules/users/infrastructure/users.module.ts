@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { UsersController } from './users.controller';
-import { UserInMemoryRepository } from './database/in-memory/repositorys/user-in-memory.repository';
 import { BcryptjsHashProvider } from './providers/hash-provider/bcryptjs-hash.provider';
 import { SignupUseCase } from '../application/usecases/signup.usecase';
 import { UserRepository } from '../domain/repositories/user.repository';

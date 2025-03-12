@@ -7,26 +7,31 @@ import { HashProvider } from '@/shared/application/providers/hash-provider';
 // eslint-disable-next-line
 export namespace UpdatePasswordUseCase {
   export type Input = {
-    id:string,
-    password:string,
-    oldPassword:string
+    id: string;
+    password: string;
+    oldPassword: string;
   };
 
   export type Output = UserOutputDto;
 
-  export class UseCase implements DefaultUseCase<Input,Output> {
+  export class UseCase implements DefaultUseCase<Input, Output> {
     constructor(
       private readonly userRepository: UserRepository.Repository,
-      private readonly hashProvider:HashProvider
+      private readonly hashProvider: HashProvider,
     ) {}
 
     async execute(input: Input): Promise<Output> {
       const userEntity = await this.userRepository.findById(input.id);
-      if(!input.password || !input.oldPassword){
-        throw new InvalidPasswordError('Old password and new password is required');
+      if (!input.password || !input.oldPassword) {
+        throw new InvalidPasswordError(
+          'Old password and new password is required',
+        );
       }
-      const checkOldPassword = await this.hashProvider.compareHash(input.oldPassword,userEntity.password);
-      if(!checkOldPassword){
+      const checkOldPassword = await this.hashProvider.compareHash(
+        input.oldPassword,
+        userEntity.password,
+      );
+      if (!checkOldPassword) {
         throw new InvalidPasswordError('Old password does not match');
       }
       const hashPassword = await this.hashProvider.generateHash(input.password);

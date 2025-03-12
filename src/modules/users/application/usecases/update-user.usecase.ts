@@ -6,19 +6,17 @@ import { UseCase as DefaultUseCase } from '@/shared/application/usecases/use-cas
 // eslint-disable-next-line
 export namespace UpdateUserUseCase {
   export type Input = {
-    id:string,
-    name:string
+    id: string;
+    name: string;
   };
 
   export type Output = UserOutputDto;
 
-  export class UseCase implements DefaultUseCase<Input,Output> {
-    constructor(
-      private readonly userRepository: UserRepository.Repository
-    ) {}
+  export class UseCase implements DefaultUseCase<Input, Output> {
+    constructor(private readonly userRepository: UserRepository.Repository) {}
 
     async execute(input: Input): Promise<Output> {
-      if(!input.name){
+      if (!input.name) {
         throw new BadRequestError('Name not provided');
       }
       const userEntity = await this.userRepository.findById(input.id);

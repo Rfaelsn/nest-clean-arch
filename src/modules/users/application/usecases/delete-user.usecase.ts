@@ -4,15 +4,13 @@ import { UseCase as DefaultUseCase } from '@/shared/application/usecases/use-cas
 // eslint-disable-next-line
 export namespace DeleteUserUseCase {
   export type Input = {
-    id:string
+    id: string;
   };
 
   export type Output = void;
 
-  export class UseCase implements DefaultUseCase<Input,Output> {
-    constructor(
-      private readonly userRepository: UserRepository.Repository
-    ) {}
+  export class UseCase implements DefaultUseCase<Input, Output> {
+    constructor(private readonly userRepository: UserRepository.Repository) {}
 
     async execute(input: Input): Promise<Output> {
       await this.userRepository.delete(input.id);
