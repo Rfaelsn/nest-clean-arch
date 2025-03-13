@@ -11,7 +11,7 @@ import { UpdateUserUseCase } from '../application/usecases/update-user.usecase';
 import { UpdatePasswordUseCase } from '../application/usecases/update-password-user.usecase';
 import { DeleteUserUseCase } from '../application/usecases/delete-user.usecase';
 import { PrismaService } from '@/shared/infrastructure/database/prisma/prisma.service';
-import { UserPrismaRepository } from './database/prisma/repositorys/user-prisma.repository';
+import { UserPrismaRepository } from './database/prisma/repositories/user-prisma.repository';
 
 @Module({
   controllers: [UsersController],

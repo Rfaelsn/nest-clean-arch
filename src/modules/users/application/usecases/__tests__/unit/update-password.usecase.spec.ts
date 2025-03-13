@@ -83,7 +83,7 @@ describe('UpdatePasswordUseCase unit tests', () => {
       oldPassword: '1234',
     });
 
-    const checkNewPassword = await hashProvider.comparePasswordHash(
+    const checkNewPassword = await hashProvider.compareHash(
       '4567',
       result.password,
     );

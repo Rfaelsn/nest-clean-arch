@@ -95,8 +95,6 @@ describe('UserPrismaRepository integration tests', () => {
     const entity = new UserEntity(userDataBuilder({}));
     await prismaService.user.create({ data: entity.toJSON() });
 
-    entity.update('new name');
-
     await sut.delete(entity._id);
 
     const outputUser = await prismaService.user.findUnique({
