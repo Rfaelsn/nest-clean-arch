@@ -24,10 +24,8 @@ import { ListUsersDto } from './dtos/list-users.dto';
 import { ListUsersUseCase } from '../application/usecases/list-users.usecase';
 import { UpdatePasswordDto } from './dtos/update-password.dto';
 import { UserOutputDto } from '../application/dtos/user-output.dto';
-import {
-  UserCollectionPresenter,
-  UserPresenter,
-} from './presenters/user.presenter';
+import { UserPresenter } from './presenters/user.presenter';
+import { UserCollectionPresenter } from './presenters/user-collection.presenter';
 
 @Controller('users')
 export class UsersController {
