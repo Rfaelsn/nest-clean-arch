@@ -26,7 +26,7 @@ export class UserPrismaRepository implements UserRepository.Repository {
     });
 
     if (user) {
-      throw new ConflictError(`Emails address already used`);
+      throw new ConflictError(`Email address already used`);
     }
   }
   async search(

@@ -123,7 +123,7 @@ describe('UserPrismaRepository integration tests', () => {
     const entity = new UserEntity(userDataBuilder({ email: 'a@a.com' }));
     await prismaService.user.create({ data: entity.toJSON() });
     await expect(() => sut.emailExists('a@a.com')).rejects.toThrow(
-      new ConflictError(`Emails address already used`),
+      new ConflictError(`Email address already used`),
     );
   });
 

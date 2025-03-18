@@ -6,11 +6,12 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { WrapperDataInterceptor } from './shared/infrastructure/interceptors/wrapper-data/wrapper-data.interceptor';
+import { ConflictErrorFilter } from './shared/infrastructure/exception-filters/conflict-error/conflict-error.filter';
 
 export function applyGlobalConfig(app: INestApplication) {
   app.useGlobalPipes(
     new ValidationPipe({
-      //erro padrão para quando der erro na pipe
+      //erro padrão para quando der erro na pipe (unprocessable entity)
       errorHttpStatusCode: 422,
       //desconsidera atributos a mais que forem enviados que não fazem parte dos dtos
       whitelist: true,
@@ -27,4 +28,7 @@ export function applyGlobalConfig(app: INestApplication) {
     new WrapperDataInterceptor(),
     new ClassSerializerInterceptor(app.get(Reflector)),
   );
+
+  //config que permite configurar os erros do nest para personalizar o retorno com erros personalizados
+  app.useGlobalFilters(new ConflictErrorFilter());
 }
