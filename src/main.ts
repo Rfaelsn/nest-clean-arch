@@ -12,6 +12,6 @@ async function bootstrap() {
     new FastifyAdapter(),
   );
   applyGlobalConfig(app);
-  await app.listen(3000, '0.0.0.0');
+  await app.listen(3004, '0.0.0.0');
 }
 bootstrap();

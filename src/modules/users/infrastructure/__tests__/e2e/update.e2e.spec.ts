@@ -78,5 +78,18 @@ describe('UsersController e2e tests', () => {
         'name should not be empty',
       ]);
     });
+
+    //para reconhecer o retorno do nosso erro personalizado temos que cadastrar os exception filters
+    it('should return a error with 404 code when throw NotFoundError with invalid id', async () => {
+      await request(app.getHttpServer())
+        .put('/users/fakeId')
+        .send(updateUserDto)
+        .expect(404)
+        .expect({
+          statusCode: 404,
+          error: 'Not Found',
+          message: 'UserModel not found using id fakeId',
+        });
+    });
   });
 });
