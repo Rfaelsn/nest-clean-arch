@@ -26,6 +26,7 @@ import { UpdatePasswordDto } from './dtos/update-password.dto';
 import { UserOutputDto } from '../application/dtos/user-output.dto';
 import { UserPresenter } from './presenters/user.presenter';
 import { UserCollectionPresenter } from './presenters/user-collection.presenter';
+import { AuthService } from '@/auth/infrastructure/auth.service';
 
 @Controller('users')
 export class UsersController {
@@ -50,6 +51,9 @@ export class UsersController {
   @Inject(GetUserUseCase.UseCase)
   private getUserUseCase: GetUserUseCase.UseCase;
 
+  @Inject(AuthService)
+  private authService: AuthService;
+
   static userToResponse(output: UserOutputDto): UserPresenter {
     return new UserPresenter(output);
   }
@@ -61,16 +65,16 @@ export class UsersController {
   }
 
   @Post()
-  async create(@Body() signupDto: SignupDto): Promise<UserPresenter> {
+  async create(@Body() signupDto: SignupDto) {
     const output = await this.signupUseCase.execute(signupDto);
     return UsersController.userToResponse(output);
   }
 
   @HttpCode(200)
   @Post('login')
-  async login(@Body() signinDto: SigninDto): Promise<UserPresenter> {
+  async login(@Body() signinDto: SigninDto) {
     const output = await this.signinUseCase.execute(signinDto);
-    return UsersController.userToResponse(output);
+    return this.authService.generateJwt(output.id);
   }
 
   @Get()
