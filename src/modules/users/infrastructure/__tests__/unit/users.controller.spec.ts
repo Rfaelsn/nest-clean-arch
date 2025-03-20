@@ -2,7 +2,6 @@ import { UsersController } from '../../users.controller';
 import { UserOutputDto } from '@/modules/users/application/dtos/user-output.dto';
 import { SignupUseCase } from '@/modules/users/application/usecases/signup.usecase';
 import { SignupDto } from '../../dtos/signup.dto';
-import { SigninUseCase } from '@/modules/users/application/usecases/signin.usecase';
 import { SigninDto } from '../../dtos/signin.dto';
 import { UpdateUserUseCase } from '@/modules/users/application/usecases/update-user.usecase';
 import { UpdateUserDto } from '../../dtos/update-user.dto';
